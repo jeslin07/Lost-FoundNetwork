@@ -1,0 +1,445 @@
+{% extends 'base.html' %}
+
+{% block title %}FindIt Kerala - Kerala's Smart Lost & Found Platform{% endblock %}
+
+{% block content %}
+<div class="min-h-screen">
+    <!-- Hero Section with Animated Background -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary-50 via-white to-accent-50">
+        <!-- Animated Background Elements -->
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+            <div class="absolute top-1/3 right-1/4 w-64 h-64 bg-accent-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style="animation-delay: 2s;"></div>
+            <div class="absolute bottom-1/4 left-1/3 w-64 h-64 bg-success-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style="animation-delay: 4s;"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="animate-slide-up">
+                <!-- Badge -->
+                <div class="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-primary-700 mb-8 shadow-lg border border-white/20">
+                    <span class="w-2 h-2 bg-success-400 rounded-full mr-2 animate-pulse"></span>
+                    Kerala's #1 Lost & Found Platform
+                </div>
+                
+                <!-- Main Heading -->
+                <h1 class="text-5xl md:text-7xl font-display font-extrabold mb-6">
+                    <span class="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 bg-clip-text text-transparent">
+                        Lost Something?
+                    </span>
+                    <br>
+                    <span class="bg-gradient-to-r from-accent-500 via-accent-600 to-accent-700 bg-clip-text text-transparent">
+                        We'll Find It!
+                    </span>
+                </h1>
+                
+                <!-- Subtitle -->
+                <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    Kerala's smartest lost and found platform powered by AI matching, community support, and instant notifications. 
+                    <span class="font-semibold text-primary-700">Join 50,000+ happy users!</span>
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                    <a href="#" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-2xl font-semibold text-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105">
+                        <svg class="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Report Lost Item
+                    </a>
+                    <a href="#" class="group inline-flex items-center px-8 py-4 bg-white/80 backdrop-blur-sm text-primary-700 rounded-2xl font-semibold text-lg hover:bg-white hover:shadow-xl transition-all duration-300 border-2 border-primary-200 hover:border-primary-300 transform hover:scale-105">
+                        <svg class="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Found Something?
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-primary-700 mb-2">12K+</div>
+                        <div class="text-gray-600">Items Returned</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-accent-600 mb-2">50K+</div>
+                        <div class="text-gray-600">Happy Users</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-success-600 mb-2">95%</div>
+                        <div class="text-gray-600">Success Rate</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl md:text-4xl font-bold text-primary-700 mb-2">24/7</div>
+                        <div class="text-gray-600">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                    <span class="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                        How It Works
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Simple, fast, and effective. Get your lost items back in just 3 easy steps.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Step 1 -->
+                <div class="text-center group">
+                    <div class="relative mb-8">
+                        <div class="w-24 h-24 bg-gradient-to-br from-primary-500 to-primary-700 rounded-3xl flex items-center justify-center mx-auto shadow-2xl group-hover:shadow-3xl group-hover:scale-110 transition-all duration-300">
+                            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-accent-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            1
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Report Your Item</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Upload photos and details of your lost item. Our AI will create a unique fingerprint for better matching.
+                    </p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="text-center group">
+                    <div class="relative mb-8">
+                        <div class="w-24 h-24 bg-gradient-to-br from-accent-500 to-accent-700 rounded-3xl flex items-center justify-center mx-auto shadow-2xl group-hover:shadow-3xl group-hover:scale-110 transition-all duration-300">
+                            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            2
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">AI Smart Matching</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Our advanced AI scans through found items and instantly notifies you when there's a potential match.
+                    </p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="text-center group">
+                    <div class="relative mb-8">
+                        <div class="w-24 h-24 bg-gradient-to-br from-success-500 to-success-700 rounded-3xl flex items-center justify-center mx-auto shadow-2xl group-hover:shadow-3xl group-hover:scale-110 transition-all duration-300">
+                            <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-accent-400 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            3
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Safe Recovery</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Meet at verified safe locations or get items delivered. We ensure secure handovers with ID verification.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-24 bg-gradient-to-b from-gray-50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                    <span class="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
+                        Why Choose FindIt Kerala?
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Advanced technology meets Kerala's community spirit for the most effective lost and found experience.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature Cards -->
+                <div class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">AI-Powered Matching</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Advanced computer vision and machine learning algorithms that recognize patterns and match items with 95% accuracy.
+                    </p>
+                </div>
+
+                <div class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-accent-200 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-6h0m0-10a9 9 0 019 9v6"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Instant Notifications</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Get real-time SMS and email alerts the moment someone reports an item that matches your description.
+                    </p>
+                </div>
+
+                <div class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-success-200 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-success-500 to-success-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Verified Safe Zones</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Meet at police stations, malls, and other verified locations across Kerala for secure item exchanges.
+                    </p>
+                </div>
+
+                <div class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Community Network</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Kerala's largest community of helpful citizens working together to reunite lost items with their owners.
+                    </p>
+                </div>
+
+                <div class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-accent-200 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">24/7 Support</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Round-the-clock customer support in Malayalam and English. We're always here to help you recover your items.
+                    </p>
+                </div>
+
+                <div class="group bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-success-200 transform hover:-translate-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-br from-success-500 to-success-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Real-time Tracking</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Track your case progress, view potential matches, and get updates every step of the way.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="py-24 bg-gradient-to-r from-primary-600 to-primary-800 relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-0 left-0 w-72 h-72 bg-white/10 rounded-full mix-blend-overlay filter blur-xl animate-float"></div>
+            <div class="absolute bottom-0 right-0 w-72 h-72 bg-accent-400/20 rounded-full mix-blend-overlay filter blur-xl animate-float" style="animation-delay: 3s;"></div>
+        </div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                Quick Search Your Lost Item
+            </h2>
+            <p class="text-xl mb-12 text-primary-100">
+                Search through thousands of found items in our database
+            </p>
+            
+            <form class="max-w-2xl mx-auto" method="GET" action="#">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <input type="text" 
+                               name="query" 
+                               placeholder="Describe your lost item (e.g., iPhone 14, black wallet, gold ring)"
+                               class="w-full px-6 py-4 rounded-2xl text-gray-900 text-lg placeholder-gray-500 focus:ring-4 focus:ring-accent-400 focus:border-transparent border-0 shadow-xl">
+                    </div>
+                    <button type="submit" 
+                            class="bg-accent-500 hover:bg-accent-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center justify-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        Search Now
+                    </button>
+                </div>
+            </form>
+            
+            <p class="text-primary-200 text-sm mt-6">
+                💡 <strong>Pro Tip:</strong> Be specific with colors, brands, and unique features for better results
+            </p>
+        </div>
+    </section>
+
+    <!-- Success Stories Section -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                    <span class="bg-gradient-to-r from-success-600 to-primary-600 bg-clip-text text-transparent">
+                        Success Stories
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Real stories from happy Kerala families who got their precious items back
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-gradient-to-br from-success-50 to-white rounded-3xl p-8 shadow-lg border border-success-100">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-success-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-success-700 font-bold">RP</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Ravi Pillai</h4>
+                            <p class="text-gray-600 text-sm">Kochi</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">
+                        "Lost my wedding ring at Marine Drive. Posted it here and got it back within 2 days! The AI matching was incredible - it found my ring among hundreds of items."
+                    </p>
+                    <div class="flex text-accent-400">
+                        ⭐⭐⭐⭐⭐
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-gradient-to-br from-primary-50 to-white rounded-3xl p-8 shadow-lg border border-primary-100">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-primary-700 font-bold">SA</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Sita Anand</h4>
+                            <p class="text-gray-600 text-sm">Thiruvananthapuram</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">
+                        "My daughter's iPhone fell from the auto. A kind person found it and reported here. We got it back the same evening! Kerala's kindness + technology = magic ✨"
+                    </p>
+                    <div class="flex text-accent-400">
+                        ⭐⭐⭐⭐⭐
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-gradient-to-br from-accent-50 to-white rounded-3xl p-8 shadow-lg border border-accent-100">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center mr-4">
+                            <span class="text-accent-700 font-bold">AK</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Arun Kumar</h4>
+                            <p class="text-gray-600 text-sm">Kozhikode</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic mb-4">
+                        "Business laptop with important files was left in a taxi. Taxi driver reported it here and I got everything back safely. This platform is a blessing for Kerala!"
+                    </p>
+                    <div class="flex text-accent-400">
+                        ⭐⭐⭐⭐⭐
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-gradient-to-r from-gray-900 via-primary-900 to-gray-900 relative overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/20 rounded-full mix-blend-overlay filter blur-3xl animate-pulse-slow"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent-500/20 rounded-full mix-blend-overlay filter blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        </div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+            <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">
+                Ready to Find Your Lost Item?
+            </h2>
+            <p class="text-xl md:text-2xl mb-12 text-gray-300">
+                Join thousands of Kerala families who trust FindIt Kerala to reunite them with their precious belongings.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <a href="#" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-2xl font-bold text-lg hover:from-accent-600 hover:to-accent-700 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Report Lost Item
+                </a>
+                <a href="#" class="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg hover:bg-white/20 transition-all duration-300 border-2 border-white/20 hover:border-white/40 transform hover:scale-105">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    Browse Found Items
+                </a>
+            </div>
+            
+            <p class="text-sm text-gray-400 mt-8">
+                🔒 Your data is secure • 🤝 Trusted by 50,000+ users • 💯 Free to use
+            </p>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const query = this.querySelector('input[name="query"]').value.trim();
+        if (!query) {
+            e.preventDefault();
+            alert('Please describe your lost item to search our database.');
+            return false;
+        }
+        if (query.length < 3) {
+            e.preventDefault();
+            alert('Please provide a more detailed description (at least 3 characters).');
+            return false;
+        }
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-slide-up');
+            }
+        });
+    }, observerOptions);
+
+    // Observe all sections for scroll animations
+    document.querySelectorAll('section').forEach(section => {
+        observer.observe(section);
+    });
+</script>
+{% endblock %}

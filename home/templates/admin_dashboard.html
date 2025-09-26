@@ -1,0 +1,490 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - FindIt Kerala{% endblock %}
+
+{% block extra_head %}
+<style>
+    .admin-sidebar {
+        transition: transform 0.3s ease-in-out;
+    }
+    .admin-sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+    @media (min-width: 768px) {
+        .admin-sidebar {
+            transform: translateX(0);
+        }
+        .admin-sidebar.collapsed {
+            transform: translateX(0);
+            width: 4rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50/30" x-data="adminDashboard()">
+    <!-- Admin Header -->
+    <div class="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-16 z-40">
+        <div class="max-w-full px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Page Title & Breadcrumb -->
+                <div class="flex items-center space-x-4">
+                    <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden bg-primary-50 p-2 rounded-lg text-primary-600 hover:bg-primary-100 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
+                            Admin Dashboard
+                        </h1>
+                        <p class="text-sm text-gray-500">Manage Kerala Lost & Found Platform</p>
+                    </div>
+                </div>
+
+                <!-- Admin Tools -->
+                <div class="flex items-center space-x-4">
+                    <!-- Notifications -->
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="relative bg-gray-50 p-2 rounded-lg text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-6zm0-10V3l-5 5 5 5V7h5"/>
+                            </svg>
+                            <span class="absolute -top-1 -right-1 w-5 h-5 bg-accent-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                        </button>
+                        
+                        <div x-show="open" @click.away="open = false" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform scale-95"
+                             x-transition:enter-end="opacity-100 transform scale-100"
+                             class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+                            <div class="p-4 border-b border-gray-100">
+                                <h3 class="font-semibold text-gray-900">Recent Notifications</h3>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto">
+                                <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
+                                    <p class="text-sm font-medium text-gray-900">New Lost Report</p>
+                                    <p class="text-xs text-gray-500">iPhone 14 reported in Kochi - 2 mins ago</p>
+                                </div>
+                                <div class="p-4 hover:bg-gray-50 border-b border-gray-100">
+                                    <p class="text-sm font-medium text-gray-900">Match Found</p>
+                                    <p class="text-xs text-gray-500">Potential match for Case #KL2025001 - 5 mins ago</p>
+                                </div>
+                                <div class="p-4 hover:bg-gray-50">
+                                    <p class="text-sm font-medium text-gray-900">Fraud Alert</p>
+                                    <p class="text-xs text-gray-500">Suspicious activity detected - User ID 1234 - 10 mins ago</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Profile -->
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-sm">AD</span>
+                        </div>
+                        <div class="hidden md:block">
+                            <p class="text-sm font-medium text-gray-900">Admin User</p>
+                            <p class="text-xs text-gray-500">Super Administrator</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="admin-sidebar fixed lg:relative lg:translate-x-0 inset-y-0 left-0 z-30 w-64 bg-white/90 backdrop-blur-md border-r border-gray-200/50 shadow-lg lg:shadow-none" 
+             :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }"
+             x-show="sidebarOpen || window.innerWidth >= 1024">
+            
+            <div class="flex flex-col h-full pt-20 lg:pt-0">
+                <!-- Sidebar Navigation -->
+                <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+                    <!-- Dashboard -->
+                    <a href="#" @click="activeTab = 'overview'" 
+                       :class="activeTab === 'overview' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"/>
+                        </svg>
+                        Overview
+                    </a>
+
+                    <!-- User Management -->
+                    <a href="#" @click="activeTab = 'users'" 
+                       :class="activeTab === 'users' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                        </svg>
+                        User Management
+                    </a>
+
+                    <!-- Case Management -->
+                    <a href="#" @click="activeTab = 'cases'" 
+                       :class="activeTab === 'cases' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        Case Management
+                    </a>
+
+                    <!-- Drop-off & Claims -->
+                    <a href="#" @click="activeTab = 'dropoff'" 
+                       :class="activeTab === 'dropoff' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        </svg>
+                        Drop-off Centers
+                    </a>
+
+                    <!-- Fraud Monitoring -->
+                    <a href="#" @click="activeTab = 'fraud'" 
+                       :class="activeTab === 'fraud' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        Fraud Monitoring
+                    </a>
+
+                    <!-- Police Integration -->
+                    <a href="#" @click="activeTab = 'police'" 
+                       :class="activeTab === 'police' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        Police Integration
+                    </a>
+
+                    <!-- Analytics -->
+                    <a href="#" @click="activeTab = 'analytics'" 
+                       :class="activeTab === 'analytics' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        Analytics
+                    </a>
+
+                    <!-- Ads & Revenue -->
+                    <a href="#" @click="activeTab = 'monetization'" 
+                       :class="activeTab === 'monetization' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                        </svg>
+                        Monetization
+                    </a>
+
+                    <!-- System Settings -->
+                    <a href="#" @click="activeTab = 'settings'" 
+                       :class="activeTab === 'settings' ? 'bg-primary-100 text-primary-700 border-primary-200' : 'text-gray-600 hover:bg-gray-50'"
+                       class="flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 border">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        </svg>
+                        Settings
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 lg:ml-0">
+            <div class="p-6">
+                <!-- Overview Tab -->
+                <div x-show="activeTab === 'overview'" class="animate-fade-in">
+                    <!-- Key Metrics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-primary-100 text-sm font-medium">Total Cases</p>
+                                    <p class="text-3xl font-bold">2,847</p>
+                                    <p class="text-primary-200 text-sm">↗ 12% from last month</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-success-500 to-success-700 rounded-2xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-success-100 text-sm font-medium">Successful Matches</p>
+                                    <p class="text-3xl font-bold">1,923</p>
+                                    <p class="text-success-200 text-sm">95% success rate</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-accent-500 to-accent-700 rounded-2xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-accent-100 text-sm font-medium">Active Users</p>
+                                    <p class="text-3xl font-bold">15,432</p>
+                                    <p class="text-accent-200 text-sm">↗ 8% this week</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-gray-600 to-gray-800 rounded-2xl p-6 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-300 text-sm font-medium">Revenue</p>
+                                    <p class="text-3xl font-bold">₹47,832</p>
+                                    <p class="text-gray-400 text-sm">This month</p>
+                                </div>
+                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Lost Reports</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl">
+                                    <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-900">iPhone 14 Pro Max</p>
+                                        <p class="text-sm text-gray-500">Marine Drive, Kochi • 2 mins ago</p>
+                                    </div>
+                                    <span class="px-3 py-1 bg-accent-100 text-accent-800 rounded-full text-sm font-medium">New</span>
+                                </div>
+                                <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-xl">
+                                    <div class="w-12 h-12 bg-success-100 rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-success-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-900">Black Leather Wallet</p>
+                                        <p class="text-sm text-gray-500">Lulu Mall, Kochi • 15 mins ago</p>
+                                    </div>
+                                    <span class="px-3 py-1 bg-success-100 text-success-800 rounded-full text-sm font-medium">Matched</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Fraud Alerts</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-3 bg-red-50 rounded-xl border border-red-100">
+                                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-900">Multiple Reports from Same IP</p>
+                                        <p class="text-sm text-gray-500">User ID: 2847 • Requires review</p>
+                                    </div>
+                                    <button class="px-3 py-1 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
+                                        Review
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Tab -->
+                <div x-show="activeTab === 'users'" class="animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900">User Management</h2>
+                        <button class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-xl font-medium transition-colors">
+                            Add New User
+                        </button>
+                    </div>
+
+                    <!-- User Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-xl p-6 border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Users</h3>
+                            <p class="text-3xl font-bold text-primary-600">15,432</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Verified Users</h3>
+                            <p class="text-3xl font-bold text-success-600">12,847</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Police Accounts</h3>
+                            <p class="text-3xl font-bold text-accent-600">47</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-6 border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Suspended</h3>
+                            <p class="text-3xl font-bold text-red-600">23</p>
+                        </div>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                                <h3 class="text-lg font-semibold text-gray-900">All Users</h3>
+                                <div class="flex space-x-4">
+                                    <input type="text" placeholder="Search users..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                        <option>All Roles</option>
+                                        <option>Regular Users</option>
+                                        <option>Police</option>
+                                        <option>Staff</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KYC Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cases</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center mr-3">
+                                                    <span class="text-primary-600 font-medium text-sm">RA</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-gray-900">Ravi Anand</p>
+                                                    <p class="text-sm text-gray-500">ravi@email.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">User</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 bg-success-100 text-success-800 rounded-full text-sm">Verified</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3 Lost, 1 Found</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 py-1 bg-success-100 text-success-800 rounded-full text-sm">Active</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <button class="text-primary-600 hover:text-primary-900 mr-3">View</button>
+                                            <button class="text-accent-600 hover:text-accent-900 mr-3">Edit</button>
+                                            <button class="text-red-600 hover:text-red-900">Suspend</button>
+                                        </td>
+                                    </tr>
+                                    <!-- More rows would be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm text-gray-700">Showing 1 to 10 of 15,432 results</p>
+                                <div class="flex space-x-2">
+                                    <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">Previous</button>
+                                    <button class="px-3 py-1 bg-primary-600 text-white rounded-lg text-sm">1</button>
+                                    <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">2</button>
+                                    <button class="px-3 py-1 bg-white border border-gray-300 rounded-lg text-sm">Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add more tab content sections for cases, dropoff, fraud, police, analytics, monetization, and settings -->
+                <!-- Each section would follow similar structure with relevant content -->
+                
+                <!-- Placeholder for other tabs -->
+                <div x-show="activeTab !== 'overview' && activeTab !== 'users'" class="animate-fade-in">
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center">
+                        <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2 capitalize" x-text="activeTab + ' Management'"></h3>
+                        <p class="text-gray-600 mb-6">This section is under development. Advanced features coming soon!</p>
+                        <button class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+                            Coming Soon
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function adminDashboard() {
+    return {
+        activeTab: 'overview',
+        sidebarOpen: false,
+        
+        init() {
+            // Initialize dashboard
+            this.loadDashboardData();
+        },
+        
+        loadDashboardData() {
+            // Load dashboard data via AJAX
+            console.log('Loading dashboard data...');
+        },
+        
+        switchTab(tab) {
+            this.activeTab = tab;
+            this.sidebarOpen = false; // Close sidebar on mobile when tab is selected
+        }
+    }
+}
+
+// Auto-close sidebar on mobile when clicking outside
+document.addEventListener('click', function(e) {
+    const sidebar = document.querySelector('.admin-sidebar');
+    const toggleBtn = document.querySelector('[\\@click*="sidebarOpen"]');
+    
+    if (window.innerWidth < 1024 && sidebar && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+        Alpine.store('sidebarOpen', false);
+    }
+});
+
+// Handle responsive sidebar
+window.addEventListener('resize', function() {
+    if (window.innerWidth >= 1024) {
+        Alpine.store('sidebarOpen', true);
+    }
+});
+</script>
+{% endblock %}

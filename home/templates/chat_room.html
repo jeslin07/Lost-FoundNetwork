@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Chat - {{ chat_info.item_title }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+<!-- Chat Header -->
+<div class="bg-white shadow-sm border-b">
+    <div class="max-w-4xl mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-semibold text-gray-900">Chat about: {{ chat_info.item_title }}</h1>
+                <p class="text-sm text-gray-600">Chatting with {{ chat_info.other_user_name }}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <!-- Status Update Buttons - available to both users -->
+                <button onclick="updateItemStatus('recovered')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    ✅ Item Recovered
+                </button>
+                <button onclick="updateItemStatus('closed')" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded-lg text-sm">
+                    ❌ Close Case
+                </button>
+                <a href="{% url 'owner_dashboard' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
+                    Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Chat Container -->
+    <div class="max-w-4xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-lg shadow-md h-96 flex flex-col">
+            <!-- Messages Area -->
+            <div id="messages" class="flex-1 p-4 overflow-y-auto space-y-3">
+                <div class="text-center text-gray-500 text-sm">
+                    Loading messages...
+                </div>
+            </div>
+
+            <!-- Message Input -->
+            <div class="border-t p-4">
+                <form id="messageForm" class="flex space-x-3">
+                    {% csrf_token %}
+                    <input type="text" id="messageInput" placeholder="Type your message..." 
+                           class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <button type="submit" 
+                            class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentUserId = {{ current_user_id }};
+
+// Load messages initially
+loadMessages();
+
+// Poll for new messages every 3 seconds
+setInterval(loadMessages, 3000);
+
+// Send message form
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    sendMessage();
+});
+
+function loadMessages() {
+    console.log('Loading messages...');
+    fetch('/get-messages/')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Messages response:', data);
+            if (data.success) {
+                displayMessages(data.messages);
+            } else {
+                console.error('Error loading messages:', data.error);
+                document.getElementById('messages').innerHTML = '<div class="text-center text-red-500 text-sm">Error: ' + data.error + '</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+}
+
+function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+
+    console.log('Sending message:', message);
+
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('/send-message/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Send response:', data);
+        if (data.success) {
+            messageInput.value = '';
+            loadMessages(); // Refresh messages immediately
+        } else {
+            alert('Error sending message: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Send error:', error);
+        alert('Error sending message');
+    });
+}
+
+function displayMessages(messages) {
+    const messagesDiv = document.getElementById('messages');
+    
+    console.log('Displaying', messages.length, 'messages');
+    
+    messagesDiv.innerHTML = '';
+    
+    if (messages.length === 0) {
+        messagesDiv.innerHTML = '<div class="text-center text-gray-500 text-sm">No messages yet. Start the conversation!</div>';
+        return;
+    }
+    
+    messages.forEach(message => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex ${message.is_own ? 'justify-end' : 'justify-start'} mb-3`;
+        
+        messageDiv.innerHTML = `
+            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                message.is_own 
+                    ? 'bg-primary-600 text-white' 
+                    : 'bg-gray-200 text-gray-800'
+            }">
+                <div class="text-xs mb-1 ${
+                    message.is_own ? 'text-primary-200' : 'text-gray-500'
+                }">About: ${message.item_title}</div>
+                <div class="text-sm font-medium mb-1">${message.sender}</div>
+                <div class="text-sm">${escapeHtml(message.message)}</div>
+                <div class="text-xs mt-1 ${
+                    message.is_own ? 'text-primary-200' : 'text-gray-500'
+                }">${message.sent_at}</div>
+            </div>
+        `;
+        
+        messagesDiv.appendChild(messageDiv);
+    });
+    
+    // Scroll to bottom
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function updateItemStatus(status) {
+    let confirmMessage = '';
+    let successMessage = '';
+    
+    if (status === 'recovered') {
+        confirmMessage = '✅ Confirm that this item has been successfully recovered?';
+        successMessage = '🎉 Great! Item marked as recovered. Case closed.';
+    } else if (status === 'closed') {
+        confirmMessage = '❌ Close this case without recovery?';
+        successMessage = '❌ Case has been closed.';
+    }
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('status', status);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('/update-item-status/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(successMessage);
+            
+            // Send automatic message about status change
+            const statusMessage = status === 'recovered' ? 
+                '🎉 This item has been successfully recovered! Thank you both for using FindIt Kerala.' : 
+                '❌ This case has been closed.';
+            sendStatusMessage(statusMessage);
+            
+            // Redirect back after a short delay
+            setTimeout(() => {
+                window.location.href = '/owner_dashboard/';
+            }, 2000);
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating status');
+    });
+}
+
+function sendStatusMessage(message) {
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('/send-message/', {
+        method: 'POST',
+        body: formData
+    });
+}
+</script>
+{% endblock %}

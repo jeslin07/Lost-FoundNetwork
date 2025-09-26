@@ -112,11 +112,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+import os
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+MEDIA_URL = '/media/'   # URL to access media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Local folder to store uploads
+
+# -------------------------------
+# Static (CSS/JS/images served with collectstatic)
+# -------------------------------
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]  # optional, if you have a static folder
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")    # where collectstatic will put files
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
