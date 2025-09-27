@@ -13,6 +13,8 @@ import numpy as np
 import time
 import json
 from django.http import JsonResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 
@@ -813,3 +815,259 @@ def report_found_item(request):
             return render(request, "owner_dashboard.html")
 
     return redirect("owner_dashboard")
+
+def lost_items(request):
+    """Display all lost items with filters"""
+    # Get all active lost items
+    items = Item.objects.filter(status='active').select_related('owner').prefetch_related('images').order_by('-date_lost')
+    
+    # Apply filters
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        items = items.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(location_name__icontains=search_query)
+        )
+    
+    # District filter
+    district = request.GET.get('district', '').strip()
+    if district:
+        items = items.filter(location_name__icontains=district)
+    
+    # Date filter
+    date_filter = request.GET.get('date_filter', '').strip()
+    if date_filter:
+        if date_filter == 'today':
+            from datetime import date
+            items = items.filter(date_lost__date=date.today())
+        elif date_filter == 'week':
+            from datetime import date, timedelta
+            week_ago = date.today() - timedelta(days=7)
+            items = items.filter(date_lost__date__gte=week_ago)
+        elif date_filter == 'month':
+            from datetime import date, timedelta
+            month_ago = date.today() - timedelta(days=30)
+            items = items.filter(date_lost__date__gte=month_ago)
+    
+    # Reward filter
+    has_reward = request.GET.get('reward', '').strip()
+    if has_reward == 'yes':
+        items = items.filter(reward_amount__gt=0)
+    
+    # Pagination
+    paginator = Paginator(items, 12)  # 12 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'selected_district': district,
+        'selected_date_filter': date_filter,
+        'selected_reward': has_reward,
+        'total_items': items.count()
+    }
+    
+    return render(request, 'lost_items.html', context)
+
+
+def item_detail(request, item_id):
+    """Display single item detail"""
+    try:
+        item = Item.objects.select_related('owner').prefetch_related('images').get(id=item_id)
+        
+        # Get current user for chat button
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user_id = request.session.get("user_id")
+            user = AppUser.objects.get(id=user_id) if user_id else None
+        
+        context = {
+            'item': item,
+            'can_chat': user and user != item.owner,  # Can't chat with yourself
+            'current_user': user
+        }
+        
+        return render(request, 'item_detail.html', context)
+        
+    except Item.DoesNotExist:
+        messages.error(request, "Item not found.")
+        return redirect("lost_items")
+
+def found_items(request):
+    """Display all found items with filters"""
+    # Get all found items
+    items = Item.objects.filter(status='found').select_related('owner').prefetch_related('images').order_by('-date_lost')
+    
+    # Apply filters
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        items = items.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(location_name__icontains=search_query)
+        )
+    
+    # District filter
+    district = request.GET.get('district', '').strip()
+    if district:
+        items = items.filter(location_name__icontains=district)
+    
+    # Date filter
+    date_filter = request.GET.get('date_filter', '').strip()
+    if date_filter:
+        if date_filter == 'today':
+            from datetime import date
+            items = items.filter(date_lost__date=date.today())
+        elif date_filter == 'week':
+            from datetime import date, timedelta
+            week_ago = date.today() - timedelta(days=7)
+            items = items.filter(date_lost__date__gte=week_ago)
+        elif date_filter == 'month':
+            from datetime import date, timedelta
+            month_ago = date.today() - timedelta(days=30)
+            items = items.filter(date_lost__date__gte=month_ago)
+    
+    # Pagination
+    paginator = Paginator(items, 12)  # 12 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'selected_district': district,
+        'selected_date_filter': date_filter,
+        'total_items': items.count()
+    }
+    
+    return render(request, 'found_items.html', context)
+
+def found_item_detail(request, item_id):
+    """Display single found item detail"""
+    try:
+        item = Item.objects.select_related('owner').prefetch_related('images').get(id=item_id, status='found')
+        
+        # Get current user for chat button
+        if request.user.is_authenticated:
+            user = request.user
+        else:
+            user_id = request.session.get("user_id")
+            user = AppUser.objects.get(id=user_id) if user_id else None
+        
+        context = {
+            'item': item,
+            'can_chat': user and user != item.owner,  # Can't chat with yourself
+            'current_user': user
+        }
+        
+        return render(request, 'found_item_detail.html', context)
+        
+    except Item.DoesNotExist:
+        messages.error(request, "Found item not found.")
+        return redirect("found_items")
+
+def interactive_map(request):
+    """Display interactive map with lost items"""
+    return render(request, 'interactive_map.html')
+
+def map_items_api(request):
+    """API endpoint to get items for the map"""
+    try:
+        # Get items with valid coordinates
+        lost_items = Item.objects.filter(
+            status='active', 
+            location_lat__isnull=False, 
+            location_lng__isnull=False
+        ).exclude(
+            location_lat=0, 
+            location_lng=0
+        ).select_related('owner').prefetch_related('images')
+
+        found_items = Item.objects.filter(
+            status='found',
+            location_lat__isnull=False, 
+            location_lng__isnull=False
+        ).exclude(
+            location_lat=0, 
+            location_lng=0
+        ).select_related('owner').prefetch_related('images')
+
+        # Apply filters if provided
+        item_type = request.GET.get('type', 'all')  # 'lost', 'found', 'all'
+        search_query = request.GET.get('search', '').strip()
+        
+        items_data = []
+        
+        # Process lost items
+        if item_type in ['all', 'lost']:
+            filtered_lost = lost_items
+            if search_query:
+                filtered_lost = filtered_lost.filter(
+                    Q(title__icontains=search_query) |
+                    Q(description__icontains=search_query) |
+                    Q(location_name__icontains=search_query)
+                )
+            
+            for item in filtered_lost:
+                item_data = {
+                    'id': item.id,
+                    'type': 'lost',
+                    'title': item.title,
+                    'description': item.description[:100] + '...' if len(item.description) > 100 else item.description,
+                    'location_name': item.location_name,
+                    'lat': float(item.location_lat),
+                    'lng': float(item.location_lng),
+                    'date': item.date_lost.strftime('%Y-%m-%d'),
+                    'owner': item.owner.username,
+                    'reward': float(item.reward_amount) if item.reward_amount else 0,
+                    'boost': item.boost,
+                    'image_url': item.images.first().image.url if item.images.exists() else None,
+                    'detail_url': f'/item/{item.id}/'
+                }
+                items_data.append(item_data)
+
+        # Process found items
+        if item_type in ['all', 'found']:
+            filtered_found = found_items
+            if search_query:
+                filtered_found = filtered_found.filter(
+                    Q(title__icontains=search_query) |
+                    Q(description__icontains=search_query) |
+                    Q(location_name__icontains=search_query)
+                )
+            
+            for item in filtered_found:
+                item_data = {
+                    'id': item.id,
+                    'type': 'found',
+                    'title': item.title,
+                    'description': item.description[:100] + '...' if len(item.description) > 100 else item.description,
+                    'location_name': item.location_name,
+                    'lat': float(item.location_lat),
+                    'lng': float(item.location_lng),
+                    'date': item.date_lost.strftime('%Y-%m-%d'),
+                    'owner': item.owner.username,
+                    'reward': 0,
+                    'boost': False,
+                    'image_url': item.images.first().image.url if item.images.exists() else None,
+                    'detail_url': f'/found-item/{item.id}/'
+                }
+                items_data.append(item_data)
+
+        return JsonResponse({
+            'success': True,
+            'items': items_data,
+            'count': len(items_data)
+        })
+
+    except Exception as e:
+        print(f"Error in map_items_api: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e),
+            'items': [],
+            'count': 0
+        })

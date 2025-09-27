@@ -8,7 +8,7 @@ urlpatterns = [
     path("signup/", views.signup, name="signup"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
-    path("report_lost/", views.report_lost_item, name="report_lost"),
+    path("report_lost/", views.report_lost_item, name="report_lost_item"),
     path('delete-item/<int:item_id>/', views.delete_item, name='delete_item'),
 
     path('report-found/', views.report_found_item, name='report_found_item'),
@@ -21,7 +21,15 @@ urlpatterns = [
     path('send-message/', views.send_message, name='send_message'),
     path('get-messages/', views.get_messages, name='get_messages'),
     path('update-item-status/', views.update_item_status, name='update_item_status'),
+    path('lost-items/', views.lost_items, name='lost_items'),
+    path('item/<int:item_id>/', views.item_detail, name='item_detail'),
 
+    path('found-items/', views.found_items, name='found_items'),
+    path('found-item/<int:item_id>/', views.found_item_detail, name='found_item_detail'),
+
+
+    path('map/', views.interactive_map, name='interactive_map'),
+    path('api/map-items/', views.map_items_api, name='map_items_api'),
 
 
 ]

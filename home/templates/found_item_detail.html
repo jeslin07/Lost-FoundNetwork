@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ item.title }} - Found Item - FindIt Kerala{% endblock %}
+
+{% block extra_head %}
+{% if item.location_lat != 0 and item.location_lng != 0 %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endif %}
+<style>
+    /* Minimalistic animations */
+    .fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .slide-up {
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Smooth transitions */
+    .smooth-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .smooth-hover:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Clean shadows */
+    .soft-shadow {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .soft-shadow:hover {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* Minimal button styles */
+    .btn-minimal {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-minimal::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .btn-minimal:hover::before {
+        left: 100%;
+    }
+    
+    /* Clean dividers */
+    .divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+    }
+    
+    /* Leaflet minimal styling */
+    .leaflet-container {
+        border-radius: 12px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Minimal Back Button -->
+        <div class="mb-8 fade-in">
+            <a href="{% url 'found_items' %}" class="inline-flex items-center text-gray-600 hover:text-emerald-600 smooth-hover group">
+                <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span class="text-sm font-medium">Back to Found Items</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="slide-up">
+            <!-- Item Status -->
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-3">
+                    <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                    <span class="text-sm font-medium text-emerald-600">Found Item</span>
+                </div>
+                <span class="text-sm text-gray-500">{{ item.date_lost|timesince }} ago</span>
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-4xl md:text-5xl font-light text-gray-900 mb-12 leading-tight">
+                {{ item.title }}
+            </h1>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+                <!-- Image Section -->
+                <div class="lg:col-span-3">
+                    {% if item.images.exists %}
+                        <div class="aspect-video bg-gray-50 rounded-2xl overflow-hidden soft-shadow smooth-hover">
+                            <img src="{{ item.images.first.image.url }}" alt="{{ item.title }}" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- Additional Images -->
+                        {% if item.images.count > 1 %}
+                        <div class="flex space-x-3 mt-4 overflow-x-auto pb-2">
+                            {% for image in item.images.all %}
+                                <div class="flex-shrink-0 w-20 h-20 bg-gray-50 rounded-lg overflow-hidden soft-shadow smooth-hover cursor-pointer">
+                                    <img src="{{ image.image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="aspect-video bg-gray-50 rounded-2xl flex items-center justify-center soft-shadow">
+                            <div class="text-center">
+                                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <p class="text-gray-400 text-sm">No image available</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Details Section -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- Description -->
+                    <div>
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Description</h2>
+                        <p class="text-gray-600 leading-relaxed">{{ item.description }}</p>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Details -->
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Found at</p>
+                            <p class="text-gray-900 font-medium">{{ item.location_name }}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Date found</p>
+                            <p class="text-gray-900 font-medium">{{ item.date_lost|date:"F d, Y" }}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Found by</p>
+                            <p class="text-gray-900 font-medium">{{ item.owner.username }}</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Verification Notice -->
+                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-4">
+                        <p class="text-amber-800 text-sm leading-relaxed">
+                            Please be prepared to verify ownership when claiming this item.
+                        </p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="space-y-3">
+                        {% if can_chat %}
+                            <form method="POST" action="{% url 'start_chat' item.id %}" class="w-full">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 px-6 rounded-xl font-medium smooth-hover btn-minimal">
+                                    Contact Finder
+                                </button>
+                            </form>
+                            <p class="text-center text-sm text-gray-500">
+                                Think this is your item?
+                            </p>
+                        {% elif not current_user %}
+                            <a href="{% url 'login' %}" class="block w-full bg-gray-900 hover:bg-gray-800 text-white py-4 px-6 rounded-xl font-medium text-center smooth-hover btn-minimal">
+                                Login to Contact Finder
+                            </a>
+                        {% else %}
+                            <div class="w-full bg-gray-100 text-gray-600 py-4 px-6 rounded-xl text-center font-medium">
+                                You found this item
+                            </div>
+                        {% endif %}
+                        
+                        <button onclick="shareItem()" class="w-full border border-gray-200 hover:border-gray-300 text-gray-700 hover:text-gray-900 py-3 px-6 rounded-xl font-medium smooth-hover btn-minimal">
+                            Share Item
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        {% if item.location_lat != 0 and item.location_lng != 0 %}
+        <div class="mt-16 slide-up">
+            <h2 class="text-2xl font-light text-gray-900 mb-6 text-center">Location</h2>
+            <div id="itemMap" class="h-80 w-full rounded-xl"></div>
+        </div>
+        {% endif %}
+
+        <!-- Related Actions -->
+        <div class="mt-16 slide-up">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-light text-gray-900 mb-2">Not your item?</h2>
+                <p class="text-gray-600">Explore other options to find what you're looking for</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <a href="{% url 'lost_items' %}" class="group p-8 border border-gray-200 hover:border-emerald-200 rounded-xl text-center smooth-hover soft-shadow">
+                    <div class="w-12 h-12 bg-gray-100 group-hover:bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4 smooth-hover">
+                        <svg class="w-6 h-6 text-gray-600 group-hover:text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Browse Lost Items</h3>
+                    <p class="text-gray-600 text-sm">Search through lost items</p>
+                </a>
+                
+                <a href="{% url 'owner_dashboard' %}" class="group p-8 border border-gray-200 hover:border-emerald-200 rounded-xl text-center smooth-hover soft-shadow">
+                    <div class="w-12 h-12 bg-gray-100 group-hover:bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-4 smooth-hover">
+                        <svg class="w-6 h-6 text-gray-600 group-hover:text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Report Lost Item</h3>
+                    <p class="text-gray-600 text-sm">Help others find your belongings</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function shareItem() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ item.title }} - Found Item',
+            text: 'Found item: {{ item.title }}',
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            // Minimal notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm z-50 fade-in';
+            notification.textContent = 'Link copied';
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 2000);
+        });
+    }
+}
+
+{% if item.location_lat != 0 and item.location_lng != 0 %}
+document.addEventListener('DOMContentLoaded', function() {
+    const map = L.map('itemMap').setView([{{ item.location_lat }}, {{ item.location_lng }}], 15);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Minimal marker
+    const customIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: '<div style="width: 20px; height: 20px; background: #059669; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.2);"></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+    });
+    
+    L.marker([{{ item.location_lat }}, {{ item.location_lng }}], {icon: customIcon})
+        .addTo(map)
+        .bindPopup('{{ item.title }}<br><small>Found here on {{ item.date_lost|date:"M d, Y" }}</small>')
+        .openPopup();
+});
+{% endif %}
+
+// Minimal scroll animations
+document.addEventListener('DOMContentLoaded', function() {
+    const elements = document.querySelectorAll('.slide-up');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    elements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock %}

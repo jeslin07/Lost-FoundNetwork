@@ -125,24 +125,24 @@
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
+                    <a href="{% url "home" %}" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
                         Home
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
-                        Report Lost
+                    <a href="{% url "lost_items" %}" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
+                        Lost Items
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
+                    <a href="{% url "found_items" %}" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
                         Found Items
                     </a>
-                    <a href="#" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
-                        Search
+                    <a href="{% url "interactive_map" %}" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-primary-50">
+                        Interactive Map
                     </a>
                     <div class="flex items-center space-x-3">
-                        <a href="#" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                        <a href="{% url "login" %}" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200">
                             Sign In
                         </a>
-                        <a href="#" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
-                            Get Started
+                        <a href="{% url "signup" %}" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-primary-700 hover:to-primary-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                            Signup
                         </a>
                     </div>
                 </div>
@@ -171,10 +171,10 @@
                  x-transition:leave-end="opacity-0 transform -translate-y-2"
                  class="md:hidden bg-white/90 backdrop-blur-md rounded-xl mt-2 mb-4 p-4 shadow-lg border border-white/20">
                 <div class="space-y-2">
-                    <a href="#" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Home</a>
-                    <a href="#" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Report Lost</a>
-                    <a href="#" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Found Items</a>
-                    <a href="#" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Search</a>
+                    <a href="{% url "home" %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Home</a>
+                    <a href="{% url "lost_items" %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Lost Items</a>
+                    <a href="{% url "found_items" %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Found Items</a>
+                    <a href="{% url "interactive_map" %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Search</a>
                     <div class="border-t border-gray-200 pt-4 mt-4">
                         <a href="#" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Sign In</a>
                         <a href="#" class="block px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-medium text-center mt-2 hover:from-primary-700 hover:to-primary-800 transition-all">Get Started</a>

@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+
+{% block title %}Lost Items - FindIt Kerala{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Minimalistic animations */
+    .fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .slide-up {
+        animation: slideUp 0.6s ease-out;
+    }
+    
+    .stagger-fade {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Smooth transitions */
+    .smooth-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .smooth-hover:hover {
+        transform: translateY(-4px);
+    }
+    
+    /* Clean shadows */
+    .soft-shadow {
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+    }
+    
+    .soft-shadow:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Card hover effects */
+    .card-hover {
+        border: 1px solid #f3f4f6;
+        transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+    }
+    
+    /* Clean dividers */
+    .divider {
+        height: 1px;
+        background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+    }
+    
+    /* Minimal badges */
+    .badge-minimal {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Minimal Header -->
+        <div class="text-center mb-12 fade-in">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-2 h-2 bg-red-500 rounded-full mr-3"></div>
+                <span class="text-sm font-medium text-red-600">Lost Items</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-light text-gray-900 mb-3">
+                Help Find These Items
+            </h1>
+            <p class="text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Browse through lost items in Kerala and help reunite them with their owners
+            </p>
+        </div>
+
+        <!-- Clean Search Section -->
+        <div class="bg-gray-50 rounded-2xl p-6 mb-12 slide-up">
+            <form method="GET" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- Search -->
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Search items</label>
+                        <input type="text" name="search" value="{{ search_query }}" 
+                               placeholder="Type to search..."
+                               class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+
+                    <!-- Location -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                        <input type="text" name="district" value="{{ selected_district }}" 
+                               placeholder="Any location"
+                               class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                    </div>
+
+                    <!-- Date Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">When lost</label>
+                        <select name="date_filter" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                            <option value="">Any time</option>
+                            <option value="today" {% if selected_date_filter == 'today' %}selected{% endif %}>Today</option>
+                            <option value="week" {% if selected_date_filter == 'week' %}selected{% endif %}>This week</option>
+                            <option value="month" {% if selected_date_filter == 'month' %}selected{% endif %}>This month</option>
+                        </select>
+                    </div>
+
+                    <!-- Reward Filter -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Reward</label>
+                        <select name="reward" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                            <option value="">All items</option>
+                            <option value="yes" {% if selected_reward == 'yes' %}selected{% endif %}>With reward</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium smooth-hover">
+                        Search Items
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Summary -->
+        <div class="flex items-center justify-between mb-8 slide-up">
+            <div>
+                <p class="text-gray-900 font-medium">{{ total_items }} lost item{{ total_items|pluralize }}</p>
+                <p class="text-gray-500 text-sm">waiting to be found</p>
+            </div>
+            <a href="{% url 'owner_dashboard' %}" class="text-gray-600 hover:text-blue-600 text-sm font-medium smooth-hover">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Items Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for item in page_obj %}
+            <div class="bg-white rounded-2xl soft-shadow smooth-hover cursor-pointer card-hover stagger-fade"
+                 onclick="window.location.href='{% url 'item_detail' item.id %}'"
+                 style="animation-delay: {{ forloop.counter0|floatformat:0 }}00ms;">
+                
+                <!-- Image -->
+                <div class="aspect-square bg-gray-50 rounded-2xl overflow-hidden mb-4">
+                    {% if item.images.exists %}
+                        <img src="{{ item.images.first.image.url }}" alt="{{ item.title }}" 
+                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    {% else %}
+                        <div class="w-full h-full flex items-center justify-center">
+                            <div class="text-center">
+                                <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <p class="text-gray-400 text-xs">No image</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Content -->
+                <div class="p-6">
+                    <!-- Title -->
+                    <h3 class="text-lg font-medium text-gray-900 mb-2 line-clamp-1">{{ item.title }}</h3>
+                    
+                    <!-- Description -->
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ item.description|truncatechars:80 }}</p>
+                    
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% if item.reward_amount > 0 %}
+                            <span class="badge-minimal bg-green-100 text-green-700">₹{{ item.reward_amount }} reward</span>
+                        {% endif %}
+                        {% if item.boost %}
+                            <span class="badge-minimal bg-yellow-100 text-yellow-700">Boosted</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="divider mb-4"></div>
+                    
+                    <!-- Details -->
+                    <div class="space-y-2 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            </svg>
+                            <span class="truncate">{{ item.location_name }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 2v10a2 2 0 002 2h4a2 2 0 002-2V9m-6 0h8m-8 0H6a2 2 0 00-2 2v10a2 2 0 002 2h2"/>
+                            </svg>
+                            <span>{{ item.date_lost|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            <span>{{ item.owner.username }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Clean Empty State -->
+            <div class="col-span-full text-center py-16">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No items found</h3>
+                <p class="text-gray-500 mb-6">Try adjusting your search criteria</p>
+                <a href="?search=&district=&date_filter=&reward=" class="text-blue-600 hover:text-blue-700 font-medium">
+                    Clear all filters
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Minimal Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="flex justify-center mt-12 slide-up">
+            <nav class="flex items-center space-x-1">
+                {% if page_obj.has_previous %}
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}"
+                       class="p-2 text-gray-500 hover:text-gray-700 smooth-hover">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                {% endif %}
+                
+                <div class="px-4 py-2 text-sm text-gray-700">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </div>
+                
+                {% if page_obj.has_next %}
+                    <a href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}"
+                       class="p-2 text-gray-500 hover:text-gray-700 smooth-hover">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+
+        <!-- Call to Action -->
+        <div class="text-center mt-16 py-12 bg-gray-50 rounded-2xl slide-up">
+            <h2 class="text-2xl font-light text-gray-900 mb-3">Lost something?</h2>
+            <p class="text-gray-600 mb-6 max-w-md mx-auto">Report your lost item and let the community help you find it</p>
+            <a href="{% url 'owner_dashboard' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium smooth-hover">
+                Report Lost Item
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+// Stagger animation for cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.stagger-fade');
+    
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Intersection observer for slide-up elements
+    const slideElements = document.querySelectorAll('.slide-up');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    slideElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'all 0.6s ease-out';
+        observer.observe(el);
+    });
+});
+</script>
+{% endblock %}

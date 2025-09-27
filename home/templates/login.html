@@ -1,30 +1,212 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-    <h2>User Login</h2>
+{% extends 'base.html' %}
 
-    {% if messages %}
-      <ul>
-        {% for msg in messages %}
-          <li>{{ msg }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+{% block title %}Login - FindIt Kerala{% endblock %}
 
-    <form method="POST">
-        {% csrf_token %}
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-success-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+    
+    <div class="max-w-md w-full space-y-8 relative">
+        <!-- Header -->
+        <div class="text-center">
+            <!-- Logo/Icon -->
+            <div class="flex justify-center mb-6">
+                <div class="bg-gradient-to-br from-primary-600 to-primary-700 p-4 rounded-full shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <h2 class="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
+                Welcome Back
+            </h2>
+            <p class="mt-2 text-gray-600">Sign in to your FindIt Kerala account</p>
+        </div>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+        <!-- Login Form -->
+        <div class="bg-white/80 backdrop-blur-md shadow-xl rounded-2xl p-8 border border-gray-200/50">
+            <!-- Messages -->
+            {% if messages %}
+            <div class="mb-6">
+                {% for msg in messages %}
+                <div class="alert p-4 rounded-xl border {% if 'success' in msg.tags or 'successfully' in msg|lower %}bg-green-50 border-green-200 text-green-800{% else %}bg-red-50 border-red-200 text-red-800{% endif %}">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            {% if 'success' in msg.tags or 'successfully' in msg|lower %}
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
+                            {% else %}
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"/>
+                            {% endif %}
+                        </svg>
+                        {{ msg }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
 
-        <button type="submit">Login</button>
-    </form>
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="space-y-2">
+                    <label for="username" class="block text-sm font-medium text-gray-700">
+                        Username
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <input type="text" name="username" id="username" required
+                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                               placeholder="Enter your username">
+                    </div>
+                </div>
 
-    <p>Don't have an account? <a href="{% url 'signup' %}">Signup here</a></p>
-</body>
-</html>
+                <!-- Password Field -->
+                <div class="space-y-2">
+                    <label for="password" class="block text-sm font-medium text-gray-700">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <input type="password" name="password" id="password" required
+                               class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                               placeholder="Enter your password">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <button type="button" onclick="togglePassword()" class="text-gray-400 hover:text-gray-600">
+                                <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                        <label for="remember" class="ml-2 block text-sm text-gray-700">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                            Forgot password?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <div>
+                    <button type="submit" 
+                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-primary-500 group-hover:text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"/>
+                            </svg>
+                        </span>
+                        Sign in to your account
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Signup Link -->
+        <div class="text-center">
+            <p class="text-gray-600">
+                Don't have an account? 
+                <a href="{% url 'signup' %}" class="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                    Create one now →
+                </a>
+            </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="text-center space-y-2">
+            <div class="flex justify-center space-x-6 text-sm text-gray-500">
+                <a href="{% url 'home' %}" class="hover:text-primary-600 transition-colors">← Back to Home</a>
+                <span>•</span>
+                <a href="{% url 'lost_items' %}" class="hover:text-primary-600 transition-colors">Browse Lost Items</a>
+                <span>•</span>
+                <a href="{% url 'found_items' %}" class="hover:text-success-600 transition-colors">Browse Found Items</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-xs text-gray-400 mt-8">
+            <p>© 2025 FindIt Kerala. Helping reunite people with their belongings.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.086 8.086m1.792 1.792L7.91 7.91m1.792 1.792l4.242 4.242M21.543 12a9.97 9.97 0 01-1.563 3.029M12 7a5 5 0 00-4.543 2.914M12 7a5 5 0 014.543 2.914"/>
+        `;
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.innerHTML = `
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        `;
+    }
+}
+
+// Auto-focus on username field
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('username').focus();
+});
+
+// Add subtle animations
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('focus', function() {
+        this.parentElement.classList.add('scale-105');
+    });
+    
+    input.addEventListener('blur', function() {
+        this.parentElement.classList.remove('scale-105');
+    });
+});
+</script>
+
+<style>
+.bg-grid-pattern {
+    background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* Floating animation for form */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+.bg-white\/80 {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Subtle glow effect */
+.shadow-xl:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 20px rgba(99, 102, 241, 0.1);
+}
+</style>
+{% endblock %}
