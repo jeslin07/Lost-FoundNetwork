@@ -230,8 +230,19 @@ def update_item_status(request):
 
             # Update item status - NO AUTHORIZATION CHECK for now
             old_status = item.status
-            item.status = 'recovered'
+            item.status = new_status
             item.save()
+
+            # If item is recovered and has reward, add money to finder
+            if new_status == 'recovered' and item.reward_amount > 0:
+                # Get the finder (other user in chat)
+                finder_user = AppUser.objects.get(id=chat_info['other_user_id'])
+                
+                # Add reward to finder's earned amount
+                finder_user.earned_amount += item.reward_amount
+                finder_user.save()
+                
+                print(f"💰 Added ₹{item.reward_amount} to {finder_user.username}'s earnings (total: ₹{finder_user.earned_amount})")
 
             print(f"✅ Item {item.id} '{item.title}' status updated from '{old_status}' to '{new_status}' by {user.username}({user.id})")
 
@@ -239,7 +250,9 @@ def update_item_status(request):
                 'success': True, 
                 'status': new_status, 
                 'updated_by': user.username,
-                'item_title': item.title
+                'item_title': item.title,
+                'reward_paid': item.reward_amount > 0 if new_status == 'recovered' else False,
+                'reward_amount': float(item.reward_amount) if new_status == 'recovered' and item.reward_amount > 0 else 0
             })
 
         except Exception as e:
@@ -259,9 +272,11 @@ def owner_dashboard(request):
     context = {}
     
     if user:
+        print(user.earned_amount)
         # Get user's items with images
         user_items = Item.objects.filter(owner=user).prefetch_related('images').order_by('-date_lost')
         context['user_items'] = user_items
+        context['reward'] = user.earned_amount
     
     return render(request, 'owner_dashboard.html', context)
 

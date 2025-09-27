@@ -176,8 +176,15 @@
                     <a href="{% url "found_items" %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Found Items</a>
                     <a href="{% url "interactive_map" %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Search</a>
                     <div class="border-t border-gray-200 pt-4 mt-4">
-                        <a href="#" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Sign In</a>
-                        <a href="#" class="block px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-medium text-center mt-2 hover:from-primary-700 hover:to-primary-800 transition-all">Get Started</a>
+                    {% if request.user.is_authenticated or request.session.user_id %}
+                        <!-- Logged in user - show Dashboard -->
+                        <a href="{% url 'owner_dashboard' %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Dashboard</a>
+                        <a href="{% url 'logout' %}" class="block px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg font-medium text-center mt-2 hover:from-red-700 hover:to-red-800 transition-all">Sign Out</a>
+                    {% else %}
+                        <!-- Not logged in - show Sign In/Get Started -->
+                        <a href="{% url 'login' %}" class="block px-4 py-3 rounded-lg text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-colors">Sign In</a>
+                        <a href="{% url 'signup' %}" class="block px-4 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg font-medium text-center mt-2 hover:from-primary-700 hover:to-primary-800 transition-all">Get Started</a>
+                    {% endif %}
                     </div>
                 </div>
             </div>

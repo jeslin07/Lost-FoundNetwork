@@ -142,35 +142,27 @@
             
             <!-- Quick Stats -->
             {% if user_items %}
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto mb-10">
-                <!-- Total Items -->
-                <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">{{ user_items|length }}</div>
-                    <div class="text-white/90 text-sm font-medium">Total Items</div>
-                </div>
-                
-                <!-- Active Items -->
-                <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">
-                        {% for item in user_items %}{% if item.status == 'active' %}{% if forloop.first %}1{% else %}{{ forloop.counter }}{% endif %}{% endif %}{% empty %}0{% endfor %}
+            <div class="flex justify-center mb-10">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl">
+                    <!-- Total Items -->
+                    <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
+                        <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">{{ user_items|length }}</div>
+                        <div class="text-white/90 text-sm font-medium">Total Items</div>
                     </div>
-                    <div class="text-white/90 text-sm font-medium">Active</div>
-                </div>
-                
-                <!-- Found Items -->
-                <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">
-                        {% for item in user_items %}{% if item.status == 'found' %}{% if forloop.first %}1{% else %}{{ forloop.counter }}{% endif %}{% endif %}{% empty %}0{% endfor %}
+                    
+                    <!-- Active Items -->
+                    <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
+                        <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">
+                            {% for item in user_items %}{% if item.status == 'active' %}{% if forloop.first %}1{% else %}{{ forloop.counter }}{% endif %}{% endif %}{% empty %}0{% endfor %}
+                        </div>
+                        <div class="text-white/90 text-sm font-medium">Active</div>
                     </div>
-                    <div class="text-white/90 text-sm font-medium">Found</div>
-                </div>
-                
-                <!-- Recovered Items -->
-                <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
-                    <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">
-                        {% for item in user_items %}{% if item.status == 'recovered' %}{% if forloop.first %}1{% else %}{{ forloop.counter }}{% endif %}{% endif %}{% empty %}0{% endfor %}
+                   
+                    <!-- Total Earned -->
+                    <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/20 shadow-lg">
+                        <div class="text-2xl sm:text-3xl font-bold text-white mb-1 drop-shadow-lg">₹{{ reward }}</div>
+                        <div class="text-white/90 text-sm font-medium">Total Earned</div>
                     </div>
-                    <div class="text-white/90 text-sm font-medium">Recovered</div>
                 </div>
             </div>
             {% endif %}
@@ -195,6 +187,7 @@
         </div>
     </div>
 </div>
+
 
 
     <!-- Navigation Bar -->
